@@ -1,3 +1,5 @@
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 /* Get Our Elements */
 const player = document.querySelector(".player");
 const video = player.querySelector(".viewer");
@@ -58,3 +60,23 @@ toggle.addEventListener("click", togglePlay);
 skipButtons.forEach(button => button.addEventListener("click", skip));
 ranges.forEach(range => range.addEventListener("change", handleRangeUpdate));
 ranges.forEach(range => range.addEventListener("mousemove", handleRangeUpdate));
+
+// Speech recognition
+
+const recognition = new SpeechRecognition();
+recognition.interimResults = true;
+recognition.lang = "en-US";
+
+recognition.addEventListener("result", e => {
+  const transcript = Array.from(e.results)
+    .map(result => result[0])
+    .map(result => result.transcript)
+    .join("");
+
+  if (e.results[0].isFinal) {
+    console.log(transcript);
+  }
+});
+
+recognition.addEventListener("end", recognition.start);
+recognition.start();
