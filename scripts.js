@@ -12,6 +12,30 @@ const canvas = document.querySelector(".photo");
 const ctx = canvas.getContext("2d");
 const strip = document.querySelector(".strip");
 const snap = document.querySelector(".snap");
+const uploadButton = document.getElementById("upload__button");
+const list = document.getElementById("videos");
+
+const uploadWidget = cloudinary.createUploadWidget(
+  {
+    cloudName: "heydanhey",
+    tags: ["video"],
+    resourceType: "video",
+    multiple: false,
+    clientAllowedFormats: ["mp4", "mov"],
+    uploadPreset: "tycwqdaj"
+  },
+  function(error, result) {
+    if (!error && result && result.event === "success") {
+      console.log("Done! Here is the image info: ", result.info.url);
+      video.src = result.info.url;
+      console.log(result);
+      video.removeEventListener("canplay", paintToCanvas);
+      video.addEventListener("canplay", paintToCanvas);
+
+      this.close();
+    }
+  }
+);
 
 /* Build out functions */
 function togglePlay() {
@@ -46,6 +70,30 @@ function toggleFullscreen() {
   console.log("click is working");
   video.requestFullscreen();
 }
+function getVideos() {
+  fetch("https://res.cloudinary.com/heydanhey/video/list/video.json")
+    .then(response => response.json())
+    .then(data => addVideos(data.resources));
+}
+
+function addVideos(videos) {
+  videos.forEach(video => {
+    let li = document.createElement("li");
+    li.innerHTML = video.public_id;
+    const att = document.createAttribute("id");
+    att.value = `https://res.cloudinary.com/heydanhey/video/upload/v${video.version}/${video.public_id}.${video.format}`;
+    li.setAttributeNode(att);
+    li.addEventListener("click", loadVideo);
+    list.appendChild(li);
+  });
+}
+
+function loadVideo(event) {
+  video.src = event.target.id;
+  console.log(event);
+}
+
+getVideos();
 
 //filter additions
 function paintToCanvas() {
@@ -120,3 +168,11 @@ ranges.forEach(range => range.addEventListener("change", handleRangeUpdate));
 ranges.forEach(range => range.addEventListener("mousemove", handleRangeUpdate));
 
 video.addEventListener("canplay", paintToCanvas);
+
+uploadButton.addEventListener(
+  "click",
+  () => {
+    uploadWidget.open();
+  },
+  false
+);

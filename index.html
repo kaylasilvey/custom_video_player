@@ -4,10 +4,15 @@
     <meta charset="UTF-8" />
     <title>HTML Video Player</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
   </head>
+
   <body>
+    <button id="upload__button" class="cloudinary-button">Upload files</button>
+    <ul id="videos"></ul>
     <div class="controls">
       <button onClick="takePhoto()">Take Photo</button>
+
       <div class="rgb">
         <label for="rmin">Red Filter:</label>
         <input type="range" min="0" max="255" name="rmin" />
@@ -25,9 +30,8 @@
     </div>
 
     <div class="player">
-      <canvas class="photo">
-        <video class="player__video viewer" src="652333414.mp4"></video>
-      </canvas>
+      <canvas class="photo"></canvas>
+      <video class="player__video viewer" src="652333414.mp4" crossorigin="anonymous"></video>
 
       <div class="player__controls">
         <div class="progress">
