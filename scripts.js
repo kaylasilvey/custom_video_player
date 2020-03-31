@@ -1,3 +1,5 @@
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 /* Get Our Elements */
 const player = document.querySelector(".player");
 const video = player.querySelector(".viewer");
@@ -165,3 +167,39 @@ uploadButton.addEventListener(
   },
   false
 );
+
+// Speech recognition
+
+const recognition = new SpeechRecognition();
+recognition.interimResults = true;
+recognition.lang = "en-US";
+
+function checkForControls(transcript) {
+  const PLAY_COMMAND = "play video";
+  if (transcript.includes(PLAY_COMMAND)) {
+    togglePlay();
+  }
+  const PAUSE_COMMAND = "pause video";
+  if (transcript.includes(PAUSE_COMMAND)) {
+    togglePlay();
+  }
+  const FULLSCREEN_COMMAND = "full screen";
+  if (transcript.includes(FULLSCREEN_COMMAND)) {
+    toggleFullscreen();
+  }
+}
+
+recognition.addEventListener("result", e => {
+  const transcript = Array.from(e.results)
+    .map(result => result[0])
+    .map(result => result.transcript)
+    .join("");
+
+  if (e.results[0].isFinal) {
+    console.log(transcript);
+    checkForControls(transcript);
+  }
+});
+
+recognition.addEventListener("end", recognition.start);
+recognition.start();
