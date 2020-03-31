@@ -10,8 +10,6 @@ const fullscreen = player.querySelector(".fullscreen");
 
 const canvas = document.querySelector(".photo");
 const ctx = canvas.getContext("2d");
-const strip = document.querySelector(".strip");
-const snap = document.querySelector(".snap");
 const uploadButton = document.getElementById("upload__button");
 const list = document.getElementById("videos");
 
@@ -29,9 +27,13 @@ const uploadWidget = cloudinary.createUploadWidget(
       console.log("Done! Here is the image info: ", result.info.url);
       video.src = result.info.url;
       console.log(result);
-      video.removeEventListener("canplay", paintToCanvas);
-      video.addEventListener("canplay", paintToCanvas);
-
+      let li = document.createElement("li");
+      li.innerHTML = result.info.created_at;
+      const att = document.createAttribute("id");
+      att.value = result.info.url;
+      li.setAttributeNode(att);
+      li.addEventListener("click", loadVideo);
+      list.prepend(li);
       this.close();
     }
   }
@@ -77,9 +79,10 @@ function getVideos() {
 }
 
 function addVideos(videos) {
+  console.log(videos);
   videos.forEach(video => {
     let li = document.createElement("li");
-    li.innerHTML = video.public_id;
+    li.innerHTML = video.created_at;
     const att = document.createAttribute("id");
     att.value = `https://res.cloudinary.com/heydanhey/video/upload/v${video.version}/${video.public_id}.${video.format}`;
     li.setAttributeNode(att);
@@ -90,6 +93,7 @@ function addVideos(videos) {
 
 function loadVideo(event) {
   video.src = event.target.id;
+  video.play();
   console.log(event);
 }
 
@@ -102,51 +106,36 @@ function paintToCanvas() {
   console.log(width, height);
   canvas.width = width;
   canvas.height = height;
-
   return setInterval(() => {
     ctx.drawImage(video, 0, 0, width, height);
     // take the pixels out
     let pixels = ctx.getImageData(0, 0, width, height);
     // mess with them
     pixels = colorEffect(pixels);
-
     // pixels = rgbSplit(pixels);
     // ctx.globalAlpha = 0.8;
-
     // pixels = greenScreen(pixels);
     // put them back
     ctx.putImageData(pixels, 0, 0);
   }, 100);
 }
 
-function takePhoto() {
-  // played the sound
-  snap.currentTime = 0;
-  snap.play();
-
-  // take the data out of the canvas
-  const data = canvas.toDataURL("image/jpeg");
-  const link = document.createElement("a");
-  link.href = data;
-  link.setAttribute("download", "handsome");
-  link.innerHTML = `<img src="${data}" alt="Handsome Man" />`;
-  strip.insertBefore(link, strip.firstChild);
-}
-
 function colorEffect(pixels) {
-  const levels = {};
-  document.querySelectorAll(".rgb input").forEach(input => {
-    levels[input.name] = input.value;
-  });
-  console.log(levels.rmin, levels.gmin, levels.bmin);
-
-  //to do - make work for all range sliders
-
-  for (let i = 0; i < pixels.data.length; i += 4) {
-    pixels.data[i + 0] = pixels.data[i + 0] + levels.rmin; // RED
-    pixels.data[i + 1] = pixels.data[i + 1] - levels.rmin; // GREEN
-    pixels.data[i + 2] = pixels.data[i + 2] * 0.5; // Blue
+  const rmin = document.querySelector("#rmin").value;
+  console.log(rmin);
+  if (rmin > 0) {
+    video.style.position = "absolute";
+    canvas.style.display = "block";
+    for (let i = 0; i < pixels.data.length; i += 4) {
+      pixels.data[i + 0] = pixels.data[i + 0] + rmin; // RED
+      pixels.data[i + 1] = pixels.data[i + 1] - rmin; // GREEN
+      pixels.data[i + 2] = pixels.data[i + 2] * 0.5; // Blue
+    }
+  } else {
+    video.style.position = "relative";
+    canvas.style.display = "none";
   }
+
   return pixels;
 }
 
