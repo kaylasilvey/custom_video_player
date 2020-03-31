@@ -4,35 +4,25 @@
     <meta charset="UTF-8" />
     <title>HTML Video Player</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
   </head>
+
   <body>
-    <div class="photobooth">
+    <div>
+      <button id="upload__button" class="cloudinary-button">Upload files</button>
+      <ul id="videos"></ul>
       <div class="controls">
-        <button onClick="addFilter()">Add a Filter</button>
         <div class="rgb">
-          <label for="rmin">Red Min:</label>
-          <input type="range" min="0" max="255" name="rmin" />
-          <label for="rmax">Red Max:</label>
-          <input type="range" min="0" max="255" name="rmax" />
+          <label for="rmin">Red Filter:</label>
+          <input type="range" id="rmin" value="0" min="0" max="255" name="rmin" />
 
           <br />
-
-          <label for="gmin">Green Min:</label>
-          <input type="range" min="0" max="255" name="gmin" />
-          <label for="gmax">Green Max:</label>
-          <input type="range" min="0" max="255" name="gmax" />
-
-          <br />
-
-          <label for="bmin">Blue Min:</label>
-          <input type="range" min="0" max="255" name="bmin" />
-          <label for="bmax">Blue Max:</label>
-          <input type="range" min="0" max="255" name="bmax" />
         </div>
       </div>
-
-      <div class="player">
-        <video class="player__video viewer" src="652333414.mp4"></video>
+    </div>
+    <div class="player">
+      <canvas class="photo"></canvas>
+        <video class="player__video viewer" crossorigin="anonymous" src="652333414.mp4"></video>
 
         <div class="player__controls">
           <div class="progress">
@@ -46,7 +36,10 @@
           <button class="player__button fullscreen">F</button>
         </div>
       </div>
+      <div class="strip"></div>
     </div>
+
+    <audio class="snap" src="http://wesbos.com/demos/photobooth/snap.mp3" hidden></audio>
 
     <script src="scripts.js"></script>
   </body>

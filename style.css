@@ -16,6 +16,11 @@ body {
   background-size: cover;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+
+canvas {
+    display: none;
 }
 
 .player {
@@ -102,6 +107,10 @@ body {
   background: #ffc600;
   flex: 0;
   flex-basis: 50%;
+}
+
+#videos li:hover {
+  color: red;
 }
 
 /* unholy css to style input type="range" */
