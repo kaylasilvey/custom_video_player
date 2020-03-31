@@ -119,12 +119,12 @@ function paintToCanvas() {
     // pixels = greenScreen(pixels);
     // put them back
     ctx.putImageData(pixels, 0, 0);
-  }, 100);
+  }, 1000);
 }
 
 function colorEffect(pixels) {
   const rmin = document.querySelector("#rmin").value;
-  console.log(rmin);
+  console.log(rmin > 0);
   if (rmin > 0) {
     video.style.position = "absolute";
     canvas.style.display = "block";
