@@ -17,11 +17,13 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  font: 12px Arial, sans-serif;
 }
 
 canvas {
     display: none;
 }
+
 
 .player {
   max-width: 750px;
@@ -110,7 +112,9 @@ canvas {
 }
 
 #videos li:hover {
-  color: red;
+  color: yellow;
+  box-sizing: inherit;
+  font-size: 1.5rem;
 }
 
 /* unholy css to style input type="range" */
